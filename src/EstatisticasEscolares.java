@@ -108,4 +108,78 @@ public class EstatisticasEscolares {
             System.out.println("Desvio Padrão: " + desvioPadrao);
         }
     }
+
+    private double calcularMediaPorAluno(String id) {
+        List<Double> notas = notasPorAluno.get(id);
+        return calcularMedia(notas);
+    }
+
+    public void melhorDesempenho() {
+        // iniciando a variavel dessa maneira faz ela ter o menor valor possivel que um
+        // double pode ter, assim caso tenha valores negativos ainda irá funcionar
+        double melhorMedia = Double.NEGATIVE_INFINITY;
+        List<String> melhoresAlunos = new ArrayList<>();
+
+        for (String aluno : notasPorAluno.keySet()) {
+            double media = calcularMediaPorAluno(aluno);
+            if (media > melhorMedia) {
+                melhorMedia = media;
+                melhoresAlunos.clear();
+                melhoresAlunos.add(aluno);
+            } else if (media == melhorMedia) {
+                melhoresAlunos.add(aluno);
+            }
+        }
+
+        System.out.println("Aluno(s) com o melhor média:");
+        for (String aluno : melhoresAlunos) {
+            System.out.println("Aluno: " + aluno + ", Média: " + melhorMedia);
+        }
+    }
+
+    public void piorDesempenho() {
+        // iniciando a variavel com o maior valor possivel para um double
+        double piorMedia = Double.POSITIVE_INFINITY;
+        List<String> pioresAlunos = new ArrayList<>();
+
+        for (String aluno : notasPorAluno.keySet()) {
+            double media = calcularMediaPorAluno(aluno);
+            if (media < piorMedia) {
+                piorMedia = media;
+                pioresAlunos.clear();
+                pioresAlunos.add(aluno);
+            } else if (media == piorMedia) {
+                pioresAlunos.add(aluno);
+            }
+        }
+
+        System.out.println("Aluno(s) com o pior média:");
+        for (String aluno : pioresAlunos) {
+            System.out.println("Aluno: " + aluno + ", Média: " + piorMedia);
+        }
+    }
+
+    public int quantidadeTotalAlunos() {
+        return notasPorAluno.size();
+    }
+
+    public void classificarAlunosPorDisciplina() {
+        for (String disciplina : notasPorDisciplina.keySet()) {
+            List<Double> notas = notasPorDisciplina.get(disciplina);
+            int aprovados = 0;
+            int reprovados = 0;
+
+            for (Double nota : notas) {
+                if (nota >= 70) {
+                    aprovados++;
+                } else {
+                    reprovados++;
+                }
+            }
+
+            System.out.println("Disciplina: " + disciplina);
+            System.out.println("Alunos aprovados: " + aprovados);
+            System.out.println("Alunos reprovados: " + reprovados);
+        }
+    }
 }
