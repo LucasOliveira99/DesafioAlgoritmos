@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -180,6 +182,33 @@ public class EstatisticasEscolares {
             System.out.println("Disciplina: " + disciplina);
             System.out.println("Alunos aprovados: " + aprovados);
             System.out.println("Alunos reprovados: " + reprovados);
+        }
+    }
+
+    public void criarTxtAprovadosReprovados(String pastaRetorno) throws IOException {
+        try (PrintWriter printAprovados = new PrintWriter(new FileWriter(pastaRetorno + "/alunosAprovados.txt"));
+                PrintWriter printReprovados = new PrintWriter(new FileWriter(pastaRetorno + "/alunos_reprovados.txt"))) {
+            for (String id : notasPorAluno.keySet()) {
+                List<Double> notas = notasPorAluno.get(id);
+                boolean aprovado = true;
+
+                for (Double nota : notas) {
+                    if (nota < 70) {
+                        aprovado = false;
+                        break;
+                    }
+                }
+
+                if (aprovado) {
+                    printAprovados.println("ID do Aluno: " + id);
+                    printAprovados.println("Notas: " + notas);
+                    printAprovados.println();
+                } else {
+                    printReprovados.println("ID do Aluno: " + id);
+                    printReprovados.println("Notas: " + notas);
+                    printReprovados.println();
+                }
+            }
         }
     }
 }

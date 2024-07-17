@@ -13,5 +13,7 @@ public class App {
 
         teste.quantidadeTotalAlunos();
         teste.classificarAlunosPorDisciplina();
+
+        teste.criarTxtAprovadosReprovados("Retorno");
     }
 }
