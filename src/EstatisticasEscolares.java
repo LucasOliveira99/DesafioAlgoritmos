@@ -8,14 +8,23 @@ import java.util.List;
 import java.util.Map;
 
 public class EstatisticasEscolares {
-    //ano vai ser a chave, a nota vai ser o valor (nao sei se a nota pode ser quebrada ou nao entao vou deixar assim)
+    // ano vai ser a chave, a nota vai ser o valor (nao sei se a nota pode ser
+    // quebrada ou nao entao vou deixar assim)
     private Map<Integer, List<Double>> notasPorAno;
-    //id vai ser a chave, deixei string pq sei la posso trocar pro nome do aluno tambem
+    // id vai ser a chave, deixei string pq sei la posso trocar pro nome do aluno
+    // tambem
     private Map<String, List<Double>> notasPorAluno;
+    private Map<String, List<Double>> notasPorDisciplina;
 
     public EstatisticasEscolares() {
         this.notasPorAno = new HashMap<>();
         this.notasPorAluno = new HashMap<>();
+        this.notasPorDisciplina = new HashMap<>();
+
+        notasPorDisciplina.put("Algoritmos", new ArrayList<>());
+        notasPorDisciplina.put("POO", new ArrayList<>());
+        notasPorDisciplina.put("Calculo", new ArrayList<>());
+        notasPorDisciplina.put("ProjetoDeExtensao", new ArrayList<>());
     }
 
     public void lerArquivo(String caminhoArquivo) throws IOException {
@@ -23,7 +32,8 @@ public class EstatisticasEscolares {
             String linha;
 
             while ((linha = leitor.readLine()) != null) {
-                                        //split define a virgula como delimitador para dividir a linha e pegar os valores
+                // split define a virgula como delimitador para dividir a linha e pegar os
+                // valores
                 String[] dados = linha.split(",");
                 String id = dados[0];
                 double nota1 = Double.parseDouble(dados[1]);
@@ -31,10 +41,18 @@ public class EstatisticasEscolares {
                 double nota3 = Double.parseDouble(dados[3]);
                 double nota4 = Double.parseDouble(dados[4]);
                 int ano = Integer.parseInt(dados[5]);
+
+                notasPorDisciplina.get("Algoritmos").add(nota1);
+                notasPorDisciplina.get("POO").add(nota2);
+                notasPorDisciplina.get("Calculo").add(nota3);
+                notasPorDisciplina.get("ProjetoDeExtensao").add(nota4);
+
                 double media = (nota1 + nota2 + nota3 + nota4) / 4;
 
-                            //computeIfAbsent verifica se o valor (no caso ano) já está definido, se nao estiver cria um novo arraylist com k->new arraylist (obrigado youtubers indianos)
-                            //dps disso a media eh adicionada a lista 
+                // computeIfAbsent verifica se o valor (no caso ano) já está definido, se nao
+                // estiver cria um novo arraylist com k->new arraylist (obrigado youtubers
+                // indianos)
+                // dps disso a media eh adicionada a lista
                 notasPorAno.computeIfAbsent(ano, k -> new ArrayList<>()).add(media);
                 notasPorAluno.computeIfAbsent(id, k -> new ArrayList<>()).add(media);
             }
@@ -42,11 +60,12 @@ public class EstatisticasEscolares {
     }
 
     private double calcularMedia(List<Double> notas) {
-                                                            //orElse funciona caso a Stream estiver vazia e não ter como calcular a média 
+        // orElse funciona caso a Stream estiver vazia e não ter como calcular a média
         return notas.stream().mapToDouble(a -> a).average().orElse(0.0);
     }
 
-    //nem sabia oq era isso, obrigado professor Ferretto vc eh um amor <3 https://youtu.be/2KjlM-5FVqA
+    // nem sabia oq era isso, obrigado professor Ferretto vc eh um amor <3
+    // https://youtu.be/2KjlM-5FVqA
     private double calcularMediana(List<Double> notas) {
         Collections.sort(notas);
         int tamanho = notas.size();
@@ -59,7 +78,7 @@ public class EstatisticasEscolares {
 
     private double calcularDesvioPadrao(List<Double> notas) {
         double media = calcularMedia(notas);
-                                                                                                    //orElse funciona caso a Stream estiver vazia e não ter como calcular a média 
+        // orElse funciona caso a Stream estiver vazia e não ter como calcular a média
         double variancia = notas.stream().mapToDouble(nota -> Math.pow(nota - media, 2)).average().orElse(0.0);
         return Math.sqrt(variancia);
     }
@@ -71,6 +90,19 @@ public class EstatisticasEscolares {
             double mediana = calcularMediana(notas);
             double desvioPadrao = calcularDesvioPadrao(notas);
             System.out.println("Ano: " + ano);
+            System.out.println("Média: " + media);
+            System.out.println("Mediana: " + mediana);
+            System.out.println("Desvio Padrão: " + desvioPadrao);
+        }
+    }
+
+    public void calcularEstatisticasPorDisciplina() {
+        for (String disciplina : notasPorDisciplina.keySet()) {
+            List<Double> notas = notasPorDisciplina.get(disciplina);
+            double media = calcularMedia(notas);
+            double mediana = calcularMediana(notas);
+            double desvioPadrao = calcularDesvioPadrao(notas);
+            System.out.println("Disciplina: " + disciplina);
             System.out.println("Média: " + media);
             System.out.println("Mediana: " + mediana);
             System.out.println("Desvio Padrão: " + desvioPadrao);

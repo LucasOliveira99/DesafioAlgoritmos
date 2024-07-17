@@ -4,6 +4,8 @@ public class App {
 
         teste.lerArquivo("Resources\\teste.txt");
 
-        teste.calcularEstatisticasPorAno();
+        //teste.calcularEstatisticasPorAno();
+
+        teste.calcularEstatisticasPorDisciplina();
     }
 }
